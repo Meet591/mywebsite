@@ -1,1 +1,61 @@
-<p style="color:red; font-size:100px">Hello World</p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Space Dodger — HTML Canvas Game</title>
+  <style>
+    :root{--bg:#0b1020;--accent:#58d68d;--muted:#9aa3b2}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#071226 0%,var(--bg) 100%);display:flex;align-items:center;justify-content:center;padding:20px;color:#e6eef8}
+    .game-wrap{width:100%;max-width:900px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);overflow:hidden}
+    header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    header h1{font-size:18px;margin:0;letter-spacing:0.4px}
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#3ec6c3);color:#062022;border:1px solid rgba(255,255,255,0.06)}
+    main{display:flex;gap:12px;padding:16px}
+    .stage{flex:1;display:flex;flex-direction:column;align-items:center}
+    canvas{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.00));width:100%;height:520px;border-radius:8px}
+    .hud{display:flex;gap:12px;align-items:center;margin-top:10px}
+    .panel{background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:8px;font-size:14px}
+    .panel b{display:block;font-size:18px}
+    .info{width:260px}
+    .instructions{font-size:13px;color:var(--muted);line-height:1.4}
+    .touch-controls{display:none;margin-top:12px;gap:8px}
+    .touch-btn{padding:10px 14px;border-radius:10px;border:0;background:rgba(255,255,255,0.04);font-weight:600}
+    footer{padding:12px 18px;border-top:1px solid rgba(255,255,255,0.03);font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+    @media (max-width:700px){canvas{height:420px}.info{display:none}.touch-controls{display:flex}}
+    /* small accessibility focus styles */
+    button:focus{outline:2px solid rgba(88,214,141,0.25);outline-offset:2px}
+  </style>
+</head>
+<body>
+  <div class="game-wrap" role="application" aria-label="Space Dodger game">
+    <header>
+      <h1>Space Dodger</h1>
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Start</button>
+        <button id="pauseBtn" class="btn">Pause</button>
+        <button id="resetBtn" class="btn">Reset</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="stage">
+        <canvas id="gameCanvas" width="900" height="520" aria-label="Game canvas"></canvas>
+        <div class="hud">
+          <div class="panel">Score <b id="score">0</b></div>
+          <div class="panel">High <b id="highscore">0</b></div>
+          <div class="panel">Lives <b id="lives">3</b></div>
+        </div>
+        <div class="touch-controls" aria-hidden="false">
+          <button id="leftTouch" class="touch-btn">◀</button>
+          <button id="thrustTouch" class="touch-btn">▲</button>
+          <button id="rightTouch" class="touch-btn">▶</button>
+        </div>
+      </section>
+
+      <aside class="info">
+        <div style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:10px">
+          <div class="instructions">
