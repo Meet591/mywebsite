@@ -3,59 +3,219 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Space Dodger — HTML Canvas Game</title>
+  <title>Snake — Single-file HTML Game</title>
   <style>
-    :root{--bg:#0b1020;--accent:#58d68d;--muted:#9aa3b2}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{background:linear-gradient(180deg,#071226 0%,var(--bg) 100%);display:flex;align-items:center;justify-content:center;padding:20px;color:#e6eef8}
-    .game-wrap{width:100%;max-width:900px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);overflow:hidden}
-    header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.03)}
-    header h1{font-size:18px;margin:0;letter-spacing:0.4px}
-    .controls{display:flex;gap:8px;align-items:center}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),#3ec6c3);color:#062022;border:1px solid rgba(255,255,255,0.06)}
-    main{display:flex;gap:12px;padding:16px}
-    .stage{flex:1;display:flex;flex-direction:column;align-items:center}
-    canvas{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.00));width:100%;height:520px;border-radius:8px}
-    .hud{display:flex;gap:12px;align-items:center;margin-top:10px}
-    .panel{background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:8px;font-size:14px}
-    .panel b{display:block;font-size:18px}
-    .info{width:260px}
-    .instructions{font-size:13px;color:var(--muted);line-height:1.4}
-    .touch-controls{display:none;margin-top:12px;gap:8px}
-    .touch-btn{padding:10px 14px;border-radius:10px;border:0;background:rgba(255,255,255,0.04);font-weight:600}
-    footer{padding:12px 18px;border-top:1px solid rgba(255,255,255,0.03);font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
-    @media (max-width:700px){canvas{height:420px}.info{display:none}.touch-controls{display:flex}}
-    /* small accessibility focus styles */
-    button:focus{outline:2px solid rgba(88,214,141,0.25);outline-offset:2px}
+    :root{--bg:#0b1220;--panel:#0f1724;--accent:#ff7b72;--muted:#9aa3b2}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#071226,#0b1220);color:#e6eef8}
+    .wrap{max-width:880px;margin:28px auto;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px}
+    header h1{font-size:18px;margin:0}
+    .controls{display:flex;gap:8px}
+    button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:8px;font-size:14px;cursor:pointer}
+    button.primary{background:linear-gradient(90deg,var(--accent),#ffb27f);color:#071226;border:0}
+    .main{display:flex;gap:16px;align-items:flex-start}
+    .stage{flex:1}
+    canvas{width:100%;height:auto;border-radius:8px;background:linear-gradient(180deg,#071226,#0b1220);display:block}
+    .side{width:220px}
+    .panel{background:var(--panel);padding:10px;border-radius:8px;margin-bottom:10px}
+    .panel b{display:block;font-size:20px}
+    .overlay{position:absolute;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(2,6,12,0.6);border-radius:8px}
+    .overlay.hidden{display:none}
+    .overlay .box{background:linear-gradient(180deg,#fff, #fff);padding:18px;border-radius:10px;color:#071226;min-width:240px;text-align:center}
+    .touch-controls{display:none;margin-top:10px;gap:8px}
+    .touch-btn{padding:10px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.04);font-weight:700}
+    @media (max-width:760px){.side{display:none}.touch-controls{display:flex}}
   </style>
 </head>
 <body>
-  <div class="game-wrap" role="application" aria-label="Space Dodger game">
+  <div class="wrap">
     <header>
-      <h1>Space Dodger</h1>
+      <h1>Snake — Single-file HTML Game</h1>
       <div class="controls">
-        <button id="startBtn" class="btn primary">Start</button>
-        <button id="pauseBtn" class="btn">Pause</button>
-        <button id="resetBtn" class="btn">Reset</button>
+        <button id="startBtn" class="primary">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
       </div>
     </header>
 
-    <main>
+    <div class="main">
       <section class="stage">
-        <canvas id="gameCanvas" width="900" height="520" aria-label="Game canvas"></canvas>
-        <div class="hud">
+        <div style="position:relative">
+          <canvas id="game" width="600" height="600" aria-label="Snake game canvas"></canvas>
+          <div id="overlay" class="overlay hidden"><div class="box"><div id="overlayMsg">Game Over</div><div style="height:10px"></div><button id="playAgain">Play Again</button></div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
           <div class="panel">Score <b id="score">0</b></div>
-          <div class="panel">High <b id="highscore">0</b></div>
-          <div class="panel">Lives <b id="lives">3</b></div>
+          <div class="panel">High <b id="high">0</b></div>
+          <div class="panel">Speed <b id="spd">8</b></div>
         </div>
         <div class="touch-controls" aria-hidden="false">
           <button id="leftTouch" class="touch-btn">◀</button>
-          <button id="thrustTouch" class="touch-btn">▲</button>
+          <button id="upTouch" class="touch-btn">▲</button>
+          <button id="downTouch" class="touch-btn">▼</button>
           <button id="rightTouch" class="touch-btn">▶</button>
         </div>
       </section>
 
-      <aside class="info">
-        <div style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:10px">
-          <div class="instructions">
+      <aside class="side">
+        <div class="panel">
+          <strong>How to play</strong>
+          <p style="color:var(--muted);font-size:13px">Use arrow keys or WASD to steer the snake. Eat food to grow. Avoid hitting your tail. The world wraps around the edges.</p>
+        </div>
+        <div class="panel">
+          <strong>Features</strong>
+          <ul style="color:var(--muted);font-size:13px;margin:6px 0 0 18px;padding:0">
+            <li>Single HTML file — no server needed</li>
+            <li>Keyboard + touch (buttons) support</li>
+            <li>Persistent high score (localStorage)</li>
+            <li>Responsive canvas</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+  // Simple Snake — single-file implementation
+  (function(){
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const scoreEl = document.getElementById('score');
+    const highEl = document.getElementById('high');
+    const spdEl = document.getElementById('spd');
+    const overlay = document.getElementById('overlay');
+    const overlayMsg = document.getElementById('overlayMsg');
+    const playAgain = document.getElementById('playAgain');
+
+    // touch
+    const leftTouch = document.getElementById('leftTouch');
+    const rightTouch = document.getElementById('rightTouch');
+    const upTouch = document.getElementById('upTouch');
+    const downTouch = document.getElementById('downTouch');
+
+    // Grid settings
+    const COLS = 30; const ROWS = 30; const CELL = 20; // canvas 600x600
+    canvas.width = COLS * CELL; canvas.height = ROWS * CELL;
+
+    // Game state
+    let snake = [];
+    let dir = {x:1,y:0};
+    let nextDir = {x:1,y:0};
+    let food = {x:0,y:0};
+    let running = false; let paused = false;
+    let speed = 8; // ticks per second
+    let tickAcc = 0; // accumulator for rAF
+    let score = 0;
+    let high = Number(localStorage.getItem('snake_high') || 0);
+    highEl.textContent = high;
+
+    // helpers
+    function randInt(max){ return Math.floor(Math.random()*max); }
+
+    function placeFood(){
+      let fx,fy; do{ fx = randInt(COLS); fy = randInt(ROWS); } while(snake.some(s=>s.x===fx && s.y===fy));
+      food = {x:fx,y:fy};
+    }
+
+    function resetGame(){
+      snake = [{x: Math.floor(COLS/2), y: Math.floor(ROWS/2)}];
+      dir = {x:1,y:0}; nextDir = {x:1,y:0};
+      score = 0; speed = 8; tickAcc = 0; paused = false; running = false;
+      placeFood(); updateHUD(); hideOverlay(); draw();
+    }
+
+    function updateHUD(){ scoreEl.textContent = score; highEl.textContent = high; spdEl.textContent = speed; }
+
+    function showOverlay(text){ overlayMsg.textContent = text; overlay.classList.remove('hidden'); }
+    function hideOverlay(){ overlay.classList.add('hidden'); }
+
+    function update(){
+      // apply direction (prevent 180-turn)
+      if((nextDir.x !== -dir.x || nextDir.y !== -dir.y)) dir = nextDir;
+      const head = {x: (snake[0].x + dir.x + COLS) % COLS, y: (snake[0].y + dir.y + ROWS) % ROWS};
+      // collision with self?
+      if(snake.some(s=>s.x===head.x && s.y===head.y)){
+        running = false; showOverlay('Game Over — Score: '+score); if(score>high){ high = score; localStorage.setItem('snake_high', high); updateHUD(); }
+        return;
+      }
+      snake.unshift(head);
+      // eat food
+      if(head.x===food.x && head.y===food.y){ score++; if(score % 5 === 0) speed = Math.min(20, speed+1); placeFood(); }
+      else { snake.pop(); }
+      updateHUD();
+    }
+
+    function draw(){
+      // clear
+      ctx.fillStyle = '#071226'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      // draw grid faint
+      ctx.strokeStyle = 'rgba(255,255,255,0.02)'; ctx.lineWidth = 1;
+      for(let x=0;x<=COLS;x++){ ctx.beginPath(); ctx.moveTo(x*CELL,0); ctx.lineTo(x*CELL,canvas.height); ctx.stroke(); }
+      for(let y=0;y<=ROWS;y++){ ctx.beginPath(); ctx.moveTo(0,y*CELL); ctx.lineTo(canvas.width,y*CELL); ctx.stroke(); }
+
+      // draw food
+      ctx.fillStyle = '#ff4f4f'; ctx.fillRect(food.x*CELL+2, food.y*CELL+2, CELL-4, CELL-4);
+
+      // draw snake
+      for(let i=0;i<snake.length;i++){
+        const s = snake[i];
+        const t = i / Math.max(1,snake.length-1);
+        const g = ctx.createLinearGradient(s.x*CELL, s.y*CELL, (s.x+1)*CELL, (s.y+1)*CELL);
+        g.addColorStop(0, `rgba(255,123,114,${0.6 + 0.4*(1-t)})`);
+        g.addColorStop(1, `rgba(255,200,160,${0.6 + 0.4*(1-t)})`);
+        ctx.fillStyle = g;
+        ctx.fillRect(s.x*CELL+1, s.y*CELL+1, CELL-2, CELL-2);
+        // eye on head
+        if(i===0){ ctx.fillStyle = '#071226'; ctx.fillRect(s.x*CELL + CELL*0.6, s.y*CELL + CELL*0.2, 4,4); }
+      }
+    }
+
+    // Game loop using rAF with accumulator for fixed tick rate
+    let lastTime = 0;
+    function loop(ts){ if(!running) return; if(paused) { requestAnimationFrame(loop); return; }
+      if(!lastTime) lastTime = ts; const delta = (ts - lastTime)/1000; lastTime = ts;
+      tickAcc += delta;
+      const interval = 1 / speed;
+      while(tickAcc >= interval){ tickAcc -= interval; update(); }
+      draw(); requestAnimationFrame(loop);
+    }
+
+    // Controls
+    window.addEventListener('keydown', e=>{
+      const k = e.key;
+      if(['ArrowLeft','a'].includes(k)) { nextDir = {x:-1,y:0}; e.preventDefault(); }
+      else if(['ArrowRight','d'].includes(k)) { nextDir = {x:1,y:0}; e.preventDefault(); }
+      else if(['ArrowUp','w'].includes(k)) { nextDir = {x:0,y:-1}; e.preventDefault(); }
+      else if(['ArrowDown','s'].includes(k)) { nextDir = {x:0,y:1}; e.preventDefault(); }
+      else if(k === ' ') { // space toggles pause
+        e.preventDefault(); if(!running) startGame(); else togglePause(); }
+    });
+
+    // Touch buttons
+    leftTouch && leftTouch.addEventListener('touchstart', e=>{ nextDir={x:-1,y:0}; e.preventDefault(); });
+    rightTouch && rightTouch.addEventListener('touchstart', e=>{ nextDir={x:1,y:0}; e.preventDefault(); });
+    upTouch && upTouch.addEventListener('touchstart', e=>{ nextDir={x:0,y:-1}; e.preventDefault(); });
+    downTouch && downTouch.addEventListener('touchstart', e=>{ nextDir={x:0,y:1}; e.preventDefault(); });
+
+    // Buttons
+    startBtn.addEventListener('click', ()=>{ if(!running) startGame(); else { /* restart */ resetGame(); startGame(); } });
+    pauseBtn.addEventListener('click', ()=>{ togglePause(); });
+    resetBtn.addEventListener('click', ()=>{ resetGame(); });
+    playAgain.addEventListener('click', ()=>{ resetGame(); startGame(); });
+
+    function startGame(){ if(running) return; running = true; paused=false; lastTime=0; tickAcc=0; requestAnimationFrame(loop); hideOverlay(); }
+    function togglePause(){ if(!running) return; paused = !paused; pauseBtn.textContent = paused ? 'Resume' : 'Pause'; }
+
+    // Initialize
+    resetGame();
+
+    // helper draw once
+    draw();
+
+  })();
+  </script>
+</body>
+</html>
