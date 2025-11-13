@@ -3,176 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe</title>
+    <title>My Portfolio</title>
     <style>
-        /* style.css combined here */
+        /* Basic Reset & Body Styling */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #4CAF50; /* A nice green for hover */
+        }
+
+        /* Hero Section */
+        #hero {
+            background: url('https://via.placeholder.com/1500x500/333333/FFFFFF?text=Background+Image') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+            padding: 100px 20px;
+            min-height: 400px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #282c34;
-            color: #61dafb;
-        }
-
-        h1 {
-            color: #ffffff;
-            margin-bottom: 20px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 5px;
-            background-color: #444;
-            border: 5px solid #61dafb;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .cell {
-            width: 100px;
-            height: 100px;
-            background-color: #3a3f4a;
-            display: flex;
             align-items: center;
-            justify-content: center;
+        }
+
+        #hero h1 {
             font-size: 3em;
-            font-weight: bold;
-            color: #ffffff;
-            cursor: pointer;
-            border: 1px solid #555;
-            transition: background-color 0.2s ease-in-out;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
         }
 
-        .cell:hover {
-            background-color: #555;
-        }
-
-        #gameStatus {
-            margin-top: 10px;
-            font-size: 1.5em;
-            color: #ffffff;
-        }
-
-        #restartButton {
-            margin-top: 20px;
-            padding: 10px 20px;
+        #hero p {
             font-size: 1.2em;
-            cursor: pointer;
-            background-color: #61dafb;
-            color: #282c34;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.2s ease-in-out;
+            margin-bottom: 20px;
+            max-width: 800px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
         }
 
-        #restartButton:hover {
-            background-color: #4fa3d4;
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Sections Styling */
+        section {
+            padding: 40px 20px;
+            margin: 20px auto;
+            max-width: 1000px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        /* About Section */
+        #about img {
+            max-width: 200px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        #about p {
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        /* Projects Section */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background-color: #e2e2e2;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .project-card p {
+            font-size: 0.9em;
+        }
+
+        .project-card .btn {
+            margin-top: 15px;
+        }
+
+        /* Contact Section */
+        #contact .contact-info {
+            text-align: center;
+        }
+
+        #contact .contact-info p {
+            margin-bottom: 10px;
+        }
+
+        #contact .contact-info a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            margin-top: 40px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+
+            #hero h1 {
+                font-size: 2.5em;
+            }
+
+            #hero p {
+                font-size: 1em;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr; /* Stack projects on small screens */
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Tic-Tac-Toe</h1>
-    <div id="gameBoard" class="grid-container">
-        <div class="cell" data-cell-index="0"></div>
-        <div class="cell" data-cell-index="1"></div>
-        <div class="cell" data-cell-index="2"></div>
-        <div class="cell" data-cell-index="3"></div>
-        <div class="cell" data-cell-index="4"></div>
-        <div class="cell" data-cell-index="5"></div>
-        <div class="cell" data-cell-index="6"></div>
-        <div class="cell" data-cell-index="7"></div>
-        <div class="cell" data-cell-index="8"></div>
-    </div>
-    <div id="gameStatus">Player X's Turn</div>
-    <button id="restartButton">Restart Game</button>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <h1>Hi, I'm [Your Name]</h1>
+            <p>A passionate developer creating awesome web experiences.</p>
+            <a href="#projects" class="btn">View My Work</a>
+        </section>
+
+        <section id="about">
+            <h2>About Me</h2>
+            <img src="https://via.placeholder.com/200/CCCCCC/888888?text=Your+Photo" alt="Your Photo">
+            <p>Hello! I'm [Your Name], a [Your Profession/Student] with a strong interest in [Your Field/Technologies]. I love to build things that live on the internet, from simple static pages to complex web applications. My journey in technology started when [mention a brief origin story or interest].</p>
+            <p>I am proficient in [List 2-3 key skills, e.g., HTML, CSS, JavaScript] and always eager to learn new technologies. I believe in creating user-friendly, efficient, and visually appealing web solutions. When I'm not coding, you can find me [mention a hobby, e.g., reading tech blogs, playing guitar, hiking].</p>
+        </section>
+
+        <section id="projects">
+            <h2>My Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3>Project One</h3>
+                    <p>A brief description of Project One, highlighting technologies used and its purpose. For example, "A responsive e-commerce landing page built with HTML, CSS, and basic JavaScript."</p>
+                    <a href="#" class="btn">Learn More</a>
+                </div>
+                <div class="project-card">
+                    <h3>Project Two</h3>
+                    <p>Description of Project Two. "An interactive to-do list application using vanilla JavaScript and local storage for persistent data."</p>
+                    <a href="#" class="btn">Learn More</a>
+                </div>
+                <div class="project-card">
+                    <h3>Project Three</h3>
+                    <p>Description of Project Three. "A personal blog platform with a clean design, focusing on content readability across devices."</p>
+                    <a href="#" class="btn">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Get In Touch</h2>
+            <div class="contact-info">
+                <p>Have a question or want to work together? Feel free to reach out!</p>
+                <p>Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+                <p>LinkedIn: <a href="https://linkedin.com/in/yourprofile" target="_blank">linkedin.com/in/yourprofile</a></p>
+                <p>GitHub: <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 [Your Name]. All rights reserved.</p>
+    </footer>
 
     <script>
-        // script.js combined here
-        document.addEventListener('DOMContentLoaded', () => {
-            const cells = document.querySelectorAll('.cell');
-            const gameStatus = document.getElementById('gameStatus');
-            const restartButton = document.getElementById('restartButton');
+        // Example: Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            let currentPlayer = 'X';
-            let board = ['', '', '', '', '', '', '', '', ''];
-            let gameActive = true;
-
-            const winningConditions = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-                [0, 4, 8], [2, 4, 6]             // Diagonals
-            ];
-
-            function handleCellClick(clickedCellEvent) {
-                const clickedCell = clickedCellEvent.target;
-                const clickedCellIndex = parseInt(clickedCell.dataset.cellIndex);
-
-                if (board[clickedCellIndex] !== '' || !gameActive) {
-                    return;
-                }
-
-                board[clickedCellIndex] = currentPlayer;
-                clickedCell.innerHTML = currentPlayer;
-
-                checkResult();
-            }
-
-            function checkResult() {
-                let roundWon = false;
-                for (let i = 0; i < winningConditions.length; i++) {
-                    const winCondition = winningConditions[i];
-                    let a = board[winCondition[0]];
-                    let b = board[winCondition[1]];
-                    let c = board[winCondition[2]];
-
-                    if (a === '' || b === '' || c === '') {
-                        continue;
-                    }
-                    if (a === b && b === c) {
-                        roundWon = true;
-                        break;
-                    }
-                }
-
-                if (roundWon) {
-                    gameStatus.innerHTML = `Player ${currentPlayer} Has Won!`;
-                    gameActive = false;
-                    return;
-                }
-
-                let roundDraw = !board.includes('');
-                if (roundDraw) {
-                    gameStatus.innerHTML = 'Game Ended in a Draw!';
-                    gameActive = false;
-                    return;
-                }
-
-                changePlayer();
-            }
-
-            function changePlayer() {
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                gameStatus.innerHTML = `Player ${currentPlayer}'s Turn`;
-            }
-
-            function restartGame() {
-                currentPlayer = 'X';
-                board = ['', '', '', '', '', '', '', '', ''];
-                gameActive = true;
-                gameStatus.innerHTML = `Player ${currentPlayer}'s Turn`;
-                cells.forEach(cell => {
-                    cell.innerHTML = '';
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
                 });
-            }
-
-            cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-            restartButton.addEventListener('click', restartGame);
+            });
         });
     </script>
 </body>
